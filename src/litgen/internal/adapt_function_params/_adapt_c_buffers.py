@@ -399,7 +399,13 @@ class _AdaptBuffersHelper:
 
         _ = self
         if self.options.bind_library == BindLibraryType.pybind11:
+            param_name = self._param(idx_param).decl.decl_name
             template = f"""
+                        // Check if the array is C-contiguous
+                        if (!{param_name}.attr("flags").attr("c_contiguous").cast<bool>()) {{
+                            throw std::runtime_error("The array must be contiguous, i.e, `a.flags.c_contiguous` must be True. Hint: use `numpy.ascontiguousarray`.");
+                        }}
+    
                         // convert py::array to C standard buffer ({mutable_or_const})
                         {_._const_space_or_empty(idx_param)}void * {_._buffer_from_pyarray_name(idx_param)} = {_._param_name(idx_param)}.{mutable_or_empty}data();
                         py::ssize_t {_._pyarray_count(idx_param)} = {_._param_name(idx_param)}.shape()[0];

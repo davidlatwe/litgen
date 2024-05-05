@@ -45,8 +45,8 @@ def apply_all_adapters(inout_adapted_function: AdaptedFunction) -> None:
     assert_parents_are_present()
 
     all_adapters_functions = [
-        adapt_exclude_params,
         adapt_c_buffers,
+        adapt_exclude_params,
         adapt_c_arrays,
         adapt_const_char_pointer_with_default_null,
         adapt_modifiable_immutable_to_return,
