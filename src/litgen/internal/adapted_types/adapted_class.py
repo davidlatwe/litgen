@@ -202,9 +202,9 @@ class AdaptedClassMember(AdaptedDecl):
         else:
             template_code = f"""
                 .def_prop_ro("{name_python}",{location}
-                    []({qualified_struct_name} &self) -> nb::ndarray<{array_typename}, nb::numpy, nb::shape<{array_size}>, nb::c_contig>
+                    []({qualified_struct_name} &self)
                     {{
-                        return self.{name_cpp};
+                        return py::ndarray<{array_typename}, py::numpy, py::shape<{array_size}>, py::c_contig>(self.{name_cpp}, {{{array_size}}});
                     }},
                     "{comment}")
                 """
