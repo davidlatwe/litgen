@@ -384,7 +384,7 @@ namespace nb = nanobind;
 // You can add any code here
 
 
-void py_init_module_MYLIB(nb::module& m)      //  rename this function name!!!
+void py_init_module_MYLIB(py::module& m)      //  rename this function name!!!
 {
     // You can add any code here
 

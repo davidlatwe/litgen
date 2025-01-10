@@ -654,7 +654,7 @@ class AdaptedClass(AdaptedElement):
             )
 
             replacements = munch.Munch()
-            replacements.py = "py" if options.bind_library == BindLibraryType.pybind11 else "nb"
+            replacements.py = "py" if options.bind_library == BindLibraryType.pybind11 else "py"
             replacements._i_ = self.options._indent_cpp_spaces()
             replacements.pydef_class_var = cpp_to_python.cpp_scope_to_pybind_var_name(options, self.cpp_element())
             replacements.qualified_struct_name = qualified_struct_name
@@ -667,7 +667,7 @@ class AdaptedClass(AdaptedElement):
 
             if self.cpp_element().is_final():
                 replacements.maybe_py_is_final = (
-                    ", py::is_final()" if options.bind_library == BindLibraryType.pybind11 else ", nb::is_final()"
+                    ", py::is_final()" if options.bind_library == BindLibraryType.pybind11 else ", py::is_final()"
                 )
             else:
                 replacements.maybe_py_is_final = ""
@@ -676,7 +676,7 @@ class AdaptedClass(AdaptedElement):
                 if options.bind_library == BindLibraryType.pybind11:
                     replacements.maybe_py_is_dynamic = ", py::dynamic_attr()"
                 else:
-                    replacements.maybe_py_is_dynamic = ", nb::dynamic_attr()"
+                    replacements.maybe_py_is_dynamic = ", py::dynamic_attr()"
             else:
                 replacements.maybe_py_is_dynamic = ""
 
@@ -759,8 +759,8 @@ class AdaptedClass(AdaptedElement):
                     code_utils.unindent_code(
                         """
                     .def("__iter__", [](const {qualified_struct_name} &v) {
-                            return nb::make_iterator(nb::type<{qualified_struct_name}>(), "iterator", v.begin(), v.end());
-                        }, nb::keep_alive<0, 1>())
+                            return py::make_iterator(py::type<{qualified_struct_name}>(), "iterator", v.begin(), v.end());
+                        }, py::keep_alive<0, 1>())
                     .def("__len__", [](const {qualified_struct_name} &v) { return v.size(); })
                     """,
                         flag_strip_empty_lines=True,
@@ -871,7 +871,7 @@ class AdaptedClass(AdaptedElement):
                 replacements.maybe_pydict = ""
                 replacements.maybe_memo = ""
             else:
-                py = "py" if self.options.bind_library == BindLibraryType.pybind11 else "nb"
+                py = "py" if self.options.bind_library == BindLibraryType.pybind11 else "py"
                 replacements.maybe_pydict = f", {py}::dict"
                 replacements.maybe_memo = f', {py}::arg("memo")'
 
@@ -1311,7 +1311,7 @@ class PythonNamedConstructorHelper:
     def pydef_code(self) -> str:
         _i_ = self.adapted_class.options._indent_cpp_spaces()
         if self.flag_generate_void_constructor():
-            py = "py" if self.options.bind_library == BindLibraryType.pybind11 else "nb"
+            py = "py" if self.options.bind_library == BindLibraryType.pybind11 else "py"
             return f"{_i_}.def({py}::init<>()) // implicit default constructor\n"
         if not self.flag_generate_named_ctor_params():
             return ""
@@ -1330,7 +1330,7 @@ class PythonNamedConstructorHelper:
         ctor_decl_adapted = adapted_ctor.cpp_adapted_function
 
         if len(ctor_decl.parameter_list.parameters) == 0:
-            py = "py" if self.options.bind_library == BindLibraryType.pybind11 else "nb"
+            py = "py" if self.options.bind_library == BindLibraryType.pybind11 else "py"
             return f"{_i_}.def({py}::init<>()) // implicit default constructor \n"
 
         if self.options.bind_library == BindLibraryType.pybind11:

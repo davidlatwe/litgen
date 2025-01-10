@@ -84,7 +84,7 @@ class AdaptedNamespace(AdaptedElement):
         submodule_code_template = '{py}::module_ {submodule_cpp_var} = {parent_module_cpp_var}.def_submodule("{module_name}", "{module_doc}");'
 
         replace_tokens = Munch()
-        replace_tokens.py = "py" if self.options.bind_library == BindLibraryType.pybind11 else "nb"
+        replace_tokens.py = "py" if self.options.bind_library == BindLibraryType.pybind11 else "py"
         replace_tokens.parent_module_cpp_var = cpp_to_python.cpp_scope_to_pybind_parent_var_name(
             self.options, self.cpp_element()
         )

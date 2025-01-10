@@ -120,7 +120,7 @@ class AdaptedDecl(AdaptedElement):
 
     def _str_pydef_as_pyarg(self) -> str:
         """pydef code for function parameters"""
-        py_colon = "py::" if self.options.bind_library == BindLibraryType.pybind11 else "nb::"
+        py_colon = "py::" if self.options.bind_library == BindLibraryType.pybind11 else "py::"
         param_template = py_colon + 'arg("{argname_python}"){maybe_equal}{maybe_defaultvalue_cpp}'
 
         maybe_defaultvalue_cpp = self.cpp_element().initial_value_code

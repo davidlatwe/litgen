@@ -539,7 +539,7 @@ class AdaptedFunction(AdaptedElement):
             if self.options.bind_library == BindLibraryType.pybind11:
                 replace_lines.maybe_return_value_policy = f"py::return_value_policy::{return_value_policy}"
             else:
-                replace_lines.maybe_return_value_policy = f"nb::rv_policy::{return_value_policy}"
+                replace_lines.maybe_return_value_policy = f"py::rv_policy::{return_value_policy}"
         else:
             replace_lines.maybe_return_value_policy = None
 
@@ -633,7 +633,7 @@ class AdaptedFunction(AdaptedElement):
             else:
                 overload_types = self.cpp_element().parameter_list.str_types_only_for_overload()
                 is_const = self.cpp_element().is_const()
-                py = "py" if self.options.bind_library == BindLibraryType.pybind11 else "nb"
+                py = "py" if self.options.bind_library == BindLibraryType.pybind11 else "py"
                 if is_const:
                     replace_tokens.function_pointer = (
                         f"{py}::overload_cast<{overload_types}>({replace_tokens.function_pointer}, {py}::const_)"
@@ -793,7 +793,7 @@ class AdaptedFunction(AdaptedElement):
             code,
             {
                 "_i_": _i_,
-                "py": "py" if self.options.bind_library == BindLibraryType.pybind11 else "nb",
+                "py": "py" if self.options.bind_library == BindLibraryType.pybind11 else "py",
                 "location": location,
                 "arg_types": arg_types,
             },
@@ -893,9 +893,9 @@ class AdaptedFunction(AdaptedElement):
                 param_type_cpp.replace("const ", "")
                 .replace("pybind11::", "py::")
                 .replace(" &", "")
-                .replace("nanobind::", "nb::")
+                .replace("nanobind::", "py::")
             )
-            if param_type_cpp_simplified in ["py::args", "py::kwargs", "nb::args", "nb::kwargs"]:
+            if param_type_cpp_simplified in ["py::args", "py::kwargs", "py::args", "py::kwargs"]:
                 continue
 
             pyarg_str = adapted_decl._str_pydef_as_pyarg()
@@ -961,19 +961,19 @@ class AdaptedFunction(AdaptedElement):
         if s is None:
             return None
         if self.options.bind_library == BindLibraryType.nanobind:
-            s = s.replace("py::", "nb::")
+            s = s.replace("py::", "py::")
         else:
-            s = s.replace("nb::", "py::")
+            s = s.replace("py::", "py::")
         return s
 
     def _pydef_fill_keep_alive_from_function_comment(self) -> str | None:
         v_py = self._pydef_fill_call_policy_from_function_comment("py::keep_alive")
-        v_nb = self._pydef_fill_call_policy_from_function_comment("nb::keep_alive")
+        v_nb = self._pydef_fill_call_policy_from_function_comment("py::keep_alive")
         return self._replace_py_or_nb_namespace(v_py or v_nb)
 
     def _pydef_fill_call_guard_from_function_comment(self) -> str | None:
         v_py = self._pydef_fill_call_policy_from_function_comment("py::call_guard")
-        v_nb = self._pydef_fill_call_policy_from_function_comment("nb::call_guard")
+        v_nb = self._pydef_fill_call_policy_from_function_comment("py::call_guard")
         return self._replace_py_or_nb_namespace(v_py or v_nb)
 
     def _pydef_str_parent_cpp_scope(self) -> str:
@@ -1251,12 +1251,12 @@ class AdaptedFunction(AdaptedElement):
                     param_type_cpp.replace("const ", "")
                     .replace("pybind11::", "py::")
                     .replace(" &", "")
-                    .replace("nanobind::", "nb::")
+                    .replace("nanobind::", "py::")
                 )
-                if param_type_cpp_simplified == "py::args" or param_type_cpp_simplified == "nb::args":
+                if param_type_cpp_simplified == "py::args" or param_type_cpp_simplified == "py::args":
                     r.append("*args")
                     continue
-                if param_type_cpp_simplified == "py::kwargs" or param_type_cpp_simplified == "nb::kwargs":
+                if param_type_cpp_simplified == "py::kwargs" or param_type_cpp_simplified == "py::kwargs":
                     r.append("**kwargs")
                     continue
 

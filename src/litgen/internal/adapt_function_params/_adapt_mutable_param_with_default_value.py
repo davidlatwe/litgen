@@ -35,7 +35,7 @@ The generated pydef code will look like this:
             const Foo & foo_or_default = foo.has_value() ? (*foo) : (Foo());
             use_foo(foo_or_default);
         },
-        nb::arg("foo") = nb::none()
+        py::arg("foo") = py::none()
     );
 
 ```
